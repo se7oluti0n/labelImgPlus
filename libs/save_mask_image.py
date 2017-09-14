@@ -43,7 +43,7 @@ class label_mask_writer:
         :return: gray image mask
         '''
         assert len(self.labels) == len(self.shapes)
-        mask_bg = Image.new('L',(self.image_width,self.image_height))
+        mask_bg = Image.new('L',(self.image_width,self.image_height), color=255)
         mask_draw = ImageDraw.Draw(mask_bg)
         if self.labels:
             index = 0

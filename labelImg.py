@@ -199,7 +199,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
         #load predefined files
         self.loadPredefinedDETClasses()
-        self.loadPredefinedCLSClasses()
+        #self.loadPredefinedCLSClasses()
         self.zoomWidget = ZoomWidget()
         self.colorDialog = ColorDialog(parent=self)
 
@@ -1730,11 +1730,12 @@ class MainWindow(QMainWindow, WindowMixin):
                     if self.labelHist is None:
                         self.lablHist = [line]
                         self.label_fre_dic[line] = 0
+                        print 'fre_dic:', self.label_fre_dic
                     else:
                         self.labelHist.append(line)
                         self.label_fre_dic[line] = 0
         if self.labelHist:
-            num = 1
+            num = 0
             assert len(
                 self.labelHist) <= 255, 'the num of labels should be less than 255 '
             for label in self.labelHist:
