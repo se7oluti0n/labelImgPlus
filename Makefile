@@ -2,5 +2,5 @@
 all: resources.py
 
 %.py: %.qrc
-	pyrcc4 -o $@ $<
+	pyrcc5 -o $@ $<
 

@@ -5,6 +5,26 @@ from xml.dom import minidom
 from lxml import etree
 
 
+'''
+copy and paste from http://effbot.org/zone/element-lib.htm#prettyprint
+it basically walks your tree and adds spaces and newlines so the tree is
+printed in a nice way
+'''
+def indent(elem, level=0):
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+
 class PascalVocWriter:
 
     def __init__(
@@ -27,9 +47,14 @@ class PascalVocWriter:
         """
             Return a pretty-printed XML string for the Element.
         """
-        rough_string = ElementTree.tostring(elem, 'utf8')
-        root = etree.fromstring(rough_string)
-        return etree.tostring(root,pretty_print=True)
+        indent(elem)
+        rough_string = ElementTree.tostring(elem, 'unicode')
+        print (rough_string)
+        return rough_string
+        # root = etree.fromstring(rough_string)
+        # return etree.tostring(root,pretty_print=True)
+
+
 
     def genXML(self):
         """
@@ -92,7 +117,7 @@ class PascalVocWriter:
             i = i + 1
         polygon['name'] = name
         polygon['point_num'] = str(len(shape))
-        print 'point num is ', str(len(shape))
+        # print 'point num is ', str(len(shape))
         self.boxlist.append(polygon)
 
     def appendObjects(self, top):
@@ -100,7 +125,7 @@ class PascalVocWriter:
             object_item = SubElement(top, 'object')
             if each_object['name']:
                 name = SubElement(object_item, 'name')
-                name.text = unicode(each_object['name'])
+                name.text = str(each_object['name'])
             pose = SubElement(object_item, 'pose')
             pose.text = "Unspecified"
             truncated = SubElement(object_item, 'truncated')
@@ -119,11 +144,11 @@ class PascalVocWriter:
                 ymax.text = str(each_object['ymax'])
             elif self.shape_type == 'POLYGON':
                 polygon = SubElement(object_item, 'polygon')
-                for i in xrange(int(each_object['point_num'])):
+                for i in range(int(each_object['point_num'])):
                     point = SubElement(polygon, 'point' + str(i))
                     point.text = str(
                         int(each_object[i][0])) + ',' + str(int(each_object[i][1]))
-                    print i, point.text
+                    # print i, point.text
 
     def save(self, targetFile=None):
         root = self.genXML()
@@ -133,7 +158,10 @@ class PascalVocWriter:
             out_file = open(self.filename + '.xml', 'w')
         else:
             out_file = open(targetFile, 'w')
-        out_file.write(self.prettify(root))
+        
+        pretty_xml = self.prettify(root)
+        print (pretty_xml)
+        out_file.write(pretty_xml)
         # out_file.write(root)
         out_file.close()
 
@@ -200,7 +228,7 @@ class PascalVocReader:
                     points.append(point)
                 self.addPolygonShape(label, points)
         else:
-            print 'unsupportable shape type'
+            print ('unsupportable shape type')
 
 
 # tempParseReader = PascalVocReader('test.xml')

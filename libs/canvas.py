@@ -1,9 +1,16 @@
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+
+
 #from PyQt4.QtOpenGL import *
 
-from shape import Shape
-from lib import distance
+from .shape import Shape
+
+
+from .lib import distance
+
+
 
 CURSOR_DEFAULT = Qt.ArrowCursor
 CURSOR_POINT = Qt.PointingHandCursor
@@ -66,7 +73,7 @@ class Canvas(QWidget):
             self.line.set_shape_type(type)
             return True
         else:
-            print "not support the shape type: " + str(type)
+            #print "not support the shape type: " + str(type)
             return False
 
     def enterEvent(self, ev):
@@ -103,7 +110,7 @@ class Canvas(QWidget):
 
     def mouseMoveEvent(self, ev):
         """Update line with last point and current coordinates."""
-        pos = self.transformPos(ev.posF())
+        pos = self.transformPos(ev.pos())
 
         self.restoreCursor()
 
@@ -190,7 +197,7 @@ class Canvas(QWidget):
             self.hVertex, self.hShape = None, None
 
     def mousePressEvent(self, ev):
-        pos = self.transformPos(ev.posF())
+        pos = self.transformPos(ev.pos())
         if ev.button() == Qt.LeftButton:
             if self.drawing():
                 if self.shape_type == self.POLYGON_SHAPE and self.current:
@@ -462,7 +469,7 @@ class Canvas(QWidget):
     def closeEnough(self, p1, p2):
         #d = distance(p1 - p2)
         #m = (p1-p2).manhattanLength()
-        # print "d %.2f, m %d, %.2f" % (d, m, d - m)
+        # #print "d %.2f, m %d, %.2f" % (d, m, d - m)
         return distance(p1 - p2) < self.epsilon
 
     def intersectionPoint(self, p1, p2):
@@ -494,7 +501,7 @@ class Canvas(QWidget):
         edge along with its index, so that the one closest can be chosen."""
         (x1, y1) = xxx_todo_changeme
         (x2, y2) = xxx_todo_changeme1
-        for i in xrange(4):
+        for i in range(4):
             x3, y3 = points[i]
             x4, y4 = points[(i + 1) % 4]
             denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)
@@ -524,22 +531,32 @@ class Canvas(QWidget):
         return super(Canvas, self).minimumSizeHint()
 
     def wheelEvent(self, ev):
-        if ev.orientation() == Qt.Vertical:
+        # if ev.orientation() == Qt.Vertical:
+        #     mods = ev.modifiers()
+        #     if Qt.ControlModifier == int(mods):
+        #         self.zoomRequest.emit(ev.angleDelta().y())
+        #     else:
+        #         self.scrollRequest.emit(
+        #             ev.angleDelta().y(), Qt.Horizontal if (
+        #                 Qt.ShiftModifier == int(mods)) else Qt.Vertical)
+        # else:
+        #     self.scrollRequest.emit(ev.angleDelta().y(), Qt.Horizontal)
+        if ev.inverted():
             mods = ev.modifiers()
             if Qt.ControlModifier == int(mods):
-                self.zoomRequest.emit(ev.delta())
+                self.zoomRequest.emit(ev.pixelDelta())
             else:
-                self.scrollRequest.emit(
-                    ev.delta(), Qt.Horizontal if (
-                        Qt.ShiftModifier == int(mods)) else Qt.Vertical)
+                self.scrollRequest.emit(ev.pixelDelta(),
+                        Qt.Horizontal if (Qt.ShiftModifier == int(mods))\
+                                    else Qt.Vertical)
         else:
-            self.scrollRequest.emit(ev.delta(), Qt.Horizontal)
+            self.scrollRequest.emit(ev.pixelDelta(), Qt.Horizontal)
         ev.accept()
 
     def keyPressEvent(self, ev):
         key = ev.key()
         if key == Qt.Key_Escape and self.current:
-            print 'ESC press'
+            #print 'ESC press'
             self.current = None
             self.drawingPolygon.emit(False)
             self.update()
@@ -576,7 +593,7 @@ class Canvas(QWidget):
     def loadShapes(self, shapes):
         self.shapes = list(shapes)
         self.shape_type = shapes[0].get_shape_type()
-        print self.shape_type
+        #print self.shape_type
         self.current = None
         self.repaint()
 

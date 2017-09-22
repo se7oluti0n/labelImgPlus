@@ -1,0 +1,6 @@
+pyqt5
+opencv-python
+lxml
+qdarkstyle
+requests
+Pillow

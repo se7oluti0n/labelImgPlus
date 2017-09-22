@@ -32,13 +32,7 @@ In order to build the resource and assets, you need to install pyqt4-dev-tools:
 
 * Ubuntu
 
-`sudo apt-get install pyqt4-dev-tools`
-
-`sudo apt-get install python-opencv`
-
-`pip install lxml`
-
-`pip install qdarkstyle`
+`pip install -r requirements.txt`
 
 `make all`
 
@@ -46,11 +40,9 @@ In order to build the resource and assets, you need to install pyqt4-dev-tools:
 
 * Windows
 
-Need to download and setup [Python 2.6](https://www.python.org/downloads/windows/) or later and [PyQt4](https://www.riverbankcomputing.com/software/pyqt/download),lxml,qdarkstyle. You can also try to download the whole neccessary executable files from [my drive](https://copy.com/oyYjFzJwPb4tKl93) and install them.
+`pip install -r requirements.txt`
 
-Open cmd and go to $labelImg, 
-
-`$ pyrcc4 -o resources.py resources.qrc`
+`$ pyrcc5 -o resources.py resources.qrc`
 
 `$ python labelImg.py`
 

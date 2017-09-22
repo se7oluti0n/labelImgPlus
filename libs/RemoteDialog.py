@@ -1,71 +1,73 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 import socket
+
 import re
+
 
 
-class SetRemoteDialog(QtGui.QDialog):
+class SetRemoteDialog(QtWidgets.QDialog):
     remote_mode = True
     remote_url = ""
     dowload_thead_num = 4
     server_image_list = None
 
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.resize(320, 100)
         self.setWindowTitle('set remote db')
-        self.remote_cb = QtGui.QCheckBox("use remote database")
+        self.remote_cb = QtWidgets.QCheckBox("use remote database")
         if self.__class__.remote_mode:
             self.remote_cb.toggle()
         self.remote_cb.stateChanged.connect(self.set_remote_mode)
-        grid = QtGui.QGridLayout()
+        grid = QtWidgets.QGridLayout()
         grid.addWidget(self.remote_cb, 0, 0, 1, 1)
         grid.addWidget(
-            QtGui.QLabel(
+            QtWidgets.QLabel(
                 u'dowload image thread num',
                 parent=self),
             1,
             0,
             1,
             1)
-        self.thread_num = QtGui.QSpinBox()
+        self.thread_num = QtWidgets.QSpinBox()
         self.thread_num.setRange(1, 10)
         self.thread_num.setValue(self.__class__.dowload_thead_num)
         self.thread_num.valueChanged.connect(self.set_thread_num)
         grid.addWidget(self.thread_num, 1, 1, 1, 1)
         grid.addWidget(
-            QtGui.QLabel(
+            QtWidgets.QLabel(
                 u'remote db url[123.57.438.245/]',
                 parent=self),
             2,
             0,
             1,
             1)
-        self.remote_url_line = QtGui.QLineEdit(parent=self)
+        self.remote_url_line = QtWidgets.QLineEdit(parent=self)
         if self.__class__.remote_url:
             self.remote_url_line.setText(self.__class__.remote_url)
         grid.addWidget(self.remote_url_line, 2, 1, 1, 1)
         grid.addWidget(
-            QtGui.QLabel(
+            QtWidgets.QLabel(
                 u'remote image list',
                 parent=self),
             3,
             0,
             1,
             1)
-        self.server_image_list = QtGui.QLineEdit(parent=self)
+        self.server_image_list = QtWidgets.QLineEdit(parent=self)
         if self.__class__.server_image_list:
             self.server_image_list.setText(self.__class__.server_image_list)
         grid.addWidget(self.server_image_list, 3, 1, 1, 1)
-        buttonBox = QtGui.QDialogButtonBox(parent=self)
+        buttonBox = QtWidgets.QDialogButtonBox(parent=self)
         buttonBox.setOrientation(QtCore.Qt.Horizontal)
         buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
         buttonBox.accepted.connect(self.accept)
         buttonBox.rejected.connect(self.reject)
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(grid)
-        spacerItem = QtGui.QSpacerItem(
-            20, 48, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(
+            20, 48, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         layout.addItem(spacerItem)
         layout.addWidget(buttonBox)
         self.setLayout(layout)
@@ -100,7 +102,7 @@ class SetRemoteDialog(QtGui.QDialog):
         if self.server_image_list is not None:
             return self.server_image_list.text()
         else:
-            QtGui.QMessageBox.about(
+            QtWidgets.QMessageBox.about(
                 self,
                 "server image list!",
                 "the server image list is None!")
@@ -112,11 +114,11 @@ class SetRemoteDialog(QtGui.QDialog):
                 self.__class__.remote_url = origin_url
                 return self.__class__.remote_url
             else:
-                QtGui.QMessageBox.about(
+                QtWidgets.QMessageBox.about(
                     self, "server connect error!", "can not connect the server")
 
         else:
-            QtGui.QMessageBox.about(
+            QtWidgets.QMessageBox.about(
                 self,
                 "url format error!",
                 "the url is not in the correct format \n such as 1.1.1.1/sf/")
